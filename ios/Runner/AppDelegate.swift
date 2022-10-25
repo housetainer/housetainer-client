@@ -39,6 +39,7 @@ import NaverThirdPartyLogin
             result(FlutterMethodNotImplemented)
             return
         }
+        conn.isNaverAppOauthEnable = false
         conn.isInAppOauthEnable = true
         conn.isOnlyPortraitSupportedInIphone()
         conn.serviceUrlScheme = kServiceAppUrlScheme
