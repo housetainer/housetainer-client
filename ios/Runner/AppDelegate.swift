@@ -4,7 +4,7 @@ import NaverThirdPartyLogin
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-    static var flutterResult: FlutterResult? = nil
+    var flutterResult: FlutterResult? = nil
     
     override func application(
         _ application: UIApplication,
@@ -16,12 +16,14 @@ import NaverThirdPartyLogin
                                                   binaryMessenger: controller.binaryMessenger)
         
         naverSocialLoginChannel.setMethodCallHandler({
-            [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
+            [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             guard call.method == "authNaver" else {
-            result(FlutterMethodNotImplemented)
-            return
-          }
-          self?.authNaver(result: result)
+                result(FlutterMethodNotImplemented)
+                return
+            }
+            
+            self?.flutterResult = result
+            self?.authNaver()
         })
         
         GeneratedPluginRegistrant.register(with: self)
@@ -34,9 +36,10 @@ import NaverThirdPartyLogin
         return true
     }
     
-    private func authNaver(result: FlutterResult) {
+    private func authNaver() {
         guard let conn = NaverThirdPartyLoginConnection.getSharedInstance() else {
-            result(FlutterMethodNotImplemented)
+            flutterResult?(FlutterMethodNotImplemented)
+            flutterResult = nil
             return
         }
         conn.isNaverAppOauthEnable = false
@@ -49,14 +52,14 @@ import NaverThirdPartyLogin
         
         conn.delegate = self
         conn.requestThirdPartyLogin()
-        
-        result(conn.accessToken)
+//        conn.requestDeleteToken()
     }
 }
 
 extension AppDelegate: NaverThirdPartyLoginConnectionDelegate {
     func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
-        return
+        flutterResult?(NaverThirdPartyLoginConnection.getSharedInstance().accessToken)
+        flutterResult = nil
     }
     
     func oauth20ConnectionDidFinishDeleteToken() {
@@ -64,10 +67,12 @@ extension AppDelegate: NaverThirdPartyLoginConnectionDelegate {
     }
     
     func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
-        return
+        flutterResult?(NaverThirdPartyLoginConnection.getSharedInstance().accessToken)
+        flutterResult = nil
     }
     
     func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
-        debugPrint("Error : \(error.debugDescription)")
+        flutterResult?(error.debugDescription)
+        flutterResult = nil
     }
 }
