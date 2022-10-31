@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String authResult;
     try {
       final String result = await platform.invokeMethod('authNaver');
-      authResult = '%$result % .';
+      authResult = result;
     } on PlatformException catch (e) {
       authResult = "Failed to Auth By Naver: '${e.message}'.";
     }
