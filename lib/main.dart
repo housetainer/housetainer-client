@@ -51,6 +51,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Get battery level.
   static const platform = MethodChannel('auth.social/naver');
+  static const naverLoginButtonImage = AssetImage('assets/naverLoginBtn.png');
   String _authResult = 'Unknown';
 
   Future<void> _authNaver() async {
@@ -71,15 +72,30 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Material(
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: _authNaver,
-              child: const Text('Get Battery Level'),
-            ),
-            Text(_authResult),
-          ],
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Spacer(),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: _authNaver, // Image tapped
+                    child: Image.asset(
+                      'assets/loginButton/login-naver.png',
+                      fit: BoxFit.cover, // Fixes border issues
+                      // width: 110.0,
+                      // height: 110.0,
+                    ),
+                  )
+                ],
+              ),
+              const Spacer(),
+              Text(_authResult),
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );
