@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               elevation: 0.0,
               foregroundColor: Colors.black,
               centerTitle: false,
-              title: Text('로그인', textAlign: TextAlign.left)),
+              title: const Text('로그인', textAlign: TextAlign.left)),
           body: const MyHomePage(title: 'Flutter Demo Home Page'),
         ));
   }
