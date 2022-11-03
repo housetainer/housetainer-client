@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "382529705358",
+    "project_id": "housetainer-2fd6f",
+    "storage_bucket": "housetainer-2fd6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382529705358:android:ce91f8b3ad2e85f30140df",
+        "android_client_info": {
+          "package_name": "com.example.housetainer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382529705358-5vdhcbt0mq56r0611rlk2v326fsrdbi5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsCxvlP9M2sXUaeja8-AbcNXZXjZ2xkFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382529705358-5vdhcbt0mq56r0611rlk2v326fsrdbi5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "382529705358-fgn973ucnvjrefhp4dlcaks0tjkjd03u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.housetainer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

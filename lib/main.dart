@@ -1,8 +1,17 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -60,8 +69,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Get battery level.
   static const platform = MethodChannel('auth.social/naver');
-  static const naverLoginButtonImage = AssetImage('assets/naverLoginBtn.png');
   String _authResult = 'Unknown';
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  late User currentUser;
+  String name = "";
+  String email = "";
 
   Future<void> _authNaver() async {
     String authResult;
@@ -70,6 +84,33 @@ class _MyHomePageState extends State<MyHomePage> {
       authResult = result;
     } on PlatformException catch (e) {
       authResult = "Failed to Auth By Naver: '${e.message}'.";
+    }
+
+    setState(() {
+      _authResult = authResult;
+    });
+  }
+
+  Future<void> _authGoogle() async {
+    String authResult;
+    try {
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      final GoogleSignInAuthentication authentication = await account!.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+          idToken: authentication.idToken,
+          accessToken: authentication.accessToken
+          );
+
+      final UserCredential authenticationResult =
+          await _auth.signInWithCredential(credential);
+      if (authenticationResult.user != null) {
+        currentUser = authenticationResult.user!;
+        authResult = currentUser.email!;
+      } else {
+        authResult = "Failed to Auth By Google: Empty User.";  
+      }
+    } on PlatformException catch (e) {
+      authResult = "Failed to Auth By Google: '${e.message}'.";
     }
 
     setState(() {
@@ -93,6 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: _authNaver, // Image tapped
                     child: Image.asset(
                       'assets/loginButton/login-naver.png',
+                      fit: BoxFit.cover, // Fixes border issues
+                      // width: 110.0,
+                      // height: 110.0,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: _authGoogle, // Image tapped
+                    child: Image.asset(
+                      'assets/loginButton/login-kakao.png',
                       fit: BoxFit.cover, // Fixes border issues
                       // width: 110.0,
                       // height: 110.0,
