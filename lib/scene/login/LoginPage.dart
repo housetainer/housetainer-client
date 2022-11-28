@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:housetainer/model/UserLoginInfoModel.dart';
 import 'package:provider/provider.dart';
 
@@ -58,53 +57,6 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  // Get battery level.
-  static const platform = MethodChannel('auth.social/naver');
-  String _authResult = 'Unknown';
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  late User currentUser;
-  String name = "";
-  String email = "";
-
-  Future<void> _authNaver(UserLoginInfoModel loginProvider) async {
-    String authResult;
-    try {
-      loginProvider.successLogin(UserLoginInfo("111", "111", "1111"));
-    } on PlatformException catch (e) {
-      return;
-    }
-  }
-
-  Future<void> authGoogle(UserLoginInfoModel loginProvider) async {
-    var info = await _authGoogle();
-    loginProvider.successLogin(info);
-  }
-
-  Future<UserLoginInfo?> _authGoogle() async {
-    try {
-      final GoogleSignInAccount? account = await googleSignIn.signIn();
-      final GoogleSignInAuthentication authentication =
-          await account!.authentication;
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-          idToken: authentication.idToken,
-          accessToken: authentication.accessToken);
-
-      final UserCredential authenticationResult =
-          await _auth.signInWithCredential(credential);
-      if (authenticationResult.user != null) {
-        currentUser = authenticationResult.user!;
-        return UserLoginInfo(
-            authentication.accessToken, null, currentUser.email);
-      } else {
-        return null;
-      }
-    } on PlatformException catch (e) {
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final loginProvider =
@@ -121,8 +73,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               Column(
                 children: [
                   GestureDetector(
-                    onTap: () async =>
-                        _authNaver(loginProvider), // Image tapped
+                    onTap: () async => await loginProvider.authNaver(), // Image tapped
                     child: Image.asset(
                       'assets/loginButton/login-naver.png',
                       fit: BoxFit.cover, // Fixes border issues
@@ -131,8 +82,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () async =>
-                        await authGoogle(loginProvider), // Image tapped
+                    onTap: () async => await loginProvider.authGoogle(), // Image tapped
                     child: Image.asset(
                       'assets/loginButton/login-kakao.png',
                       fit: BoxFit.cover, // Fixes border issues
@@ -142,8 +92,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                   )
                 ],
               ),
-              const Spacer(),
-              Text(_authResult),
               const Spacer(),
             ],
           ),
