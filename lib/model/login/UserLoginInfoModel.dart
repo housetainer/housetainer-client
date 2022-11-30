@@ -2,22 +2,26 @@ import "package:flutter/foundation.dart";
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:housetainer/model/login/LoginService.dart';
 
 class UserLoginInfo {
-  UserLoginInfo(this.accessToken, this.refreshToken, this.email);
+  UserLoginInfo(this.accessToken, this.refreshToken, this.userId);
 
   String? accessToken;
   String? refreshToken;
-  String? email;
+  String? userId;
 }
 
-class UserLoginInfoModel extends ChangeNotifier {
+class UserLoginModel extends ChangeNotifier {
   UserLoginInfo? info;
+  // loginService
+  final loginService = LoginService();
 
   // google
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final _naverAuthChannel = MethodChannel('auth.social/naver');
+  // naver
+  final _naverAuthChannel = const MethodChannel('auth.social/naver');
 
   void _successLogin(UserLoginInfo? loginInfo) {
     info = loginInfo;
@@ -47,8 +51,10 @@ class UserLoginInfoModel extends ChangeNotifier {
           await _auth.signInWithCredential(credential);
       if (authenticationResult.user != null) {
         User currentUser = authenticationResult.user!;
-        // 이메일 분기??
-        _successLogin(UserLoginInfo(authentication.accessToken, authentication.idToken, currentUser.email!));
+        
+        final request = SignUpRequest(currentUser.email!, authentication.idToken!, "GOOGLE", "정하민", currentUser.displayName!, "FEMALE", "", "010-9465-9404", currentUser.photoURL!, "082", "ko-KR");
+        final result = await loginService.signUp(request);
+        _successLogin(UserLoginInfo(authentication.accessToken, authentication.idToken, result.userId));
       } else {
         // fail
         return;

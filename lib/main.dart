@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:housetainer/model/UserLoginInfoModel.dart';
+import 'package:housetainer/model/login/UserLoginInfoModel.dart';
 import 'package:housetainer/scene/login/LoginPage.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -13,8 +13,8 @@ void main() async {
   );
   // runApp(const MyApp());
   runApp(ChangeNotifierProvider(
-      create: ((context) => UserLoginInfoModel()),
-      child: Consumer<UserLoginInfoModel>(builder: (context, loginInfo, child) {
+      create: ((context) => UserLoginModel()),
+      child: Consumer<UserLoginModel>(builder: (context, loginInfo, child) {
         if (loginInfo.info == null) {
           return const LoginPage();
         }

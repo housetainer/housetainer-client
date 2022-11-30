@@ -1,8 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:housetainer/model/UserLoginInfoModel.dart';
+import 'package:housetainer/model/network/NetworkInfo.dart';
+import 'package:housetainer/model/login/UserLoginInfoModel.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -58,9 +57,14 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+  
+  @override
   Widget build(BuildContext context) {
     final loginProvider =
-        Provider.of<UserLoginInfoModel>(context, listen: false);
+        Provider.of<UserLoginModel>(context, listen: false);
 
     return Material(
       child: Center(
