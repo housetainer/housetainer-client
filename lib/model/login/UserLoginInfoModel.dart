@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:housetainer/model/login/LoginService.dart';
+import 'package:housetainer/util/JWTParser.dart';
 
 class UserLoginInfo {
   UserLoginInfo(this.accessToken, this.refreshToken, this.userId);
@@ -52,7 +53,8 @@ class UserLoginModel extends ChangeNotifier {
       if (authenticationResult.user != null) {
         User currentUser = authenticationResult.user!;
         
-        final request = SignUpRequest(currentUser.email!, authentication.idToken!, "GOOGLE", "정하민", currentUser.displayName!, "FEMALE", "", "010-9465-9404", currentUser.photoURL!, "082", "ko-KR");
+        final jwtDict = parseJwtPayLoad(await currentUser.getIdToken());
+        final request = SignUpRequest(currentUser.email!, jwtDict['sub'], "GOOGLE", "정하민", currentUser.displayName!, "FEMALE", "", "010-9465-9404", currentUser.photoURL!, "082", "ko-KR");
         final result = await loginService.signUp(request);
         _successLogin(UserLoginInfo(authentication.accessToken, authentication.idToken, result.userId));
       } else {
