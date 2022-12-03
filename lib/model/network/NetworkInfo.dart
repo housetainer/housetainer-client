@@ -6,3 +6,4 @@ const String baseURL =
 const Map<String, String> baseHeaders = <String, String>{
   'Content-Type': 'application/json; charset=UTF-8',
 };
+const tokenName = "X-HOUSETAINER-TOKEN";
